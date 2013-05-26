@@ -9,9 +9,13 @@ module System.Console.Terminal.Size
   ( Window(..), size
   ) where
 
+import Control.Exception (catch)
 import Foreign
 import Foreign.C.Error
 import Foreign.C.Types
+#if defined(__GLASGOW_HASKELL__) && (__GLASGOW_HASKELL__ >= 706)
+import Prelude hiding (catch)
+#endif
 
 #include <sys/ioctl.h>
 #include <unistd.h>
@@ -50,12 +54,17 @@ instance Functor Window where
 -- >>> import System.Console.Terminal.Size
 -- >>> size
 -- Window {height = 60, width = 112}
-size :: Integral n => IO (Window n)
-size = with (CWin 0 0) $ \ws -> do
-  throwErrnoIfMinus1 "ioctl" $
-    ioctl (#const STDOUT_FILENO) (#const TIOCGWINSZ) ws
-  CWin row col <- peek ws
-  return $ Window (fromIntegral row) (fromIntegral col)
+size :: Integral n => IO (Maybe (Window n))
+size = catch go handler
+ where
+  go = with (CWin 0 0) $ \ws -> do
+    throwErrnoIfMinus1 "ioctl" $
+      ioctl (#const STDOUT_FILENO) (#const TIOCGWINSZ) ws
+    CWin row col <- peek ws
+    return . Just $ Window (fromIntegral row) (fromIntegral col)
+
+  handler :: (IOError -> IO (Maybe (Window h)))
+  handler _ = return Nothing
 
 foreign import ccall "sys/ioctl.h ioctl"
   ioctl :: CInt -> CInt -> Ptr CWin -> IO CInt

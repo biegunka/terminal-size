@@ -8,5 +8,5 @@ Get terminal window width and height
 ```
 >>> import System.Console.Terminal.Size
 >>> size
-Window {height = 60, width = 112}
+Just (Window {height = 60, width = 112})
 ```
