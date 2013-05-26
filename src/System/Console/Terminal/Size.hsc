@@ -55,14 +55,13 @@ instance Functor Window where
 -- >>> size
 -- Window {height = 60, width = 112}
 size :: Integral n => IO (Maybe (Window n))
-size = catch go handler
+size = with (CWin 0 0) $ \ws -> do
+  throwErrnoIfMinus1 "ioctl" $
+    ioctl (#const STDOUT_FILENO) (#const TIOCGWINSZ) ws
+  CWin row col <- peek ws
+  return . Just $ Window (fromIntegral row) (fromIntegral col)
+ `catch` handler
  where
-  go = with (CWin 0 0) $ \ws -> do
-    throwErrnoIfMinus1 "ioctl" $
-      ioctl (#const STDOUT_FILENO) (#const TIOCGWINSZ) ws
-    CWin row col <- peek ws
-    return . Just $ Window (fromIntegral row) (fromIntegral col)
-
   handler :: (IOError -> IO (Maybe (Window h)))
   handler _ = return Nothing
 
