@@ -1,6 +1,8 @@
 terminal-size
 =============
 
+[![Build Status](https://travis-ci.org/biegunka/terminal-size.png)](https://travis-ci.org/biegunka/terminal-size)
+
 Get terminal window width and height
 
 ##Usage
