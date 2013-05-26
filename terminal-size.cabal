@@ -19,6 +19,8 @@ library
   build-tools:       hsc2hs
   hs-source-dirs:    src
   exposed-modules:   System.Console.Terminal.Size
+  ghc-options:       -Wall
+                     -fno-warn-unused-do-bind
 
 source-repository head
   type:     git

@@ -13,7 +13,7 @@ import Control.Exception (catch)
 import Foreign
 import Foreign.C.Error
 import Foreign.C.Types
-#if defined(__GLASGOW_HASKELL__) && (__GLASGOW_HASKELL__ >= 706)
+#if defined(__GLASGOW_HASKELL__) && (__GLASGOW_HASKELL__ < 706)
 import Prelude hiding (catch)
 #endif
 
@@ -25,7 +25,7 @@ import Prelude hiding (catch)
 
 
 -- Interesting part of @struct winsize@
-data CWin = CWin { wsRow, wsCol :: CUShort }
+data CWin = CWin CUShort CUShort
 
 instance Storable CWin where
   sizeOf _ = (#size struct winsize)
