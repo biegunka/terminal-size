@@ -53,7 +53,7 @@ instance Functor Window where
 --
 -- >>> import System.Console.Terminal.Size
 -- >>> size
--- Window {height = 60, width = 112}
+-- Just (Window {height = 60, width = 112})
 size :: Integral n => IO (Maybe (Window n))
 size = with (CWin 0 0) $ \ws -> do
   throwErrnoIfMinus1 "ioctl" $
