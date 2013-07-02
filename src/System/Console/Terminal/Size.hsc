@@ -69,9 +69,10 @@ fdSize (Fd fd) = with (CWin 0 0) $ \ws -> do
     ioctl fd (#const TIOCGWINSZ) ws
   CWin row col <- peek ws
   return . Just $ Window (fromIntegral row) (fromIntegral col)
- `catch` handler
+ `catch`
+  handler
  where
-  handler :: (IOError -> IO (Maybe (Window h)))
+  handler :: IOError -> IO (Maybe (Window h))
   handler _ = return Nothing
 
 foreign import ccall "sys/ioctl.h ioctl"
@@ -92,7 +93,7 @@ size = fdSize (Fd (#const STDOUT_FILENO))
 -- >>> hSize stdout
 -- Just (Window {height = 56, width = 85})
 hSize :: Integral n => Handle -> IO (Maybe (Window n))
-hSize h = withHandle_ "hSize" h $ \ Handle__{haDevice = dev} ->
-    case cast dev of
-        Nothing -> return Nothing
-        Just FD{fdFD = fd} -> fdSize (Fd fd)
+hSize h = withHandle_ "hSize" h $ \Handle__ { haDevice = dev } ->
+  case cast dev of
+    Nothing -> return Nothing
+    Just FD { fdFD = fd } -> fdSize (Fd fd)
