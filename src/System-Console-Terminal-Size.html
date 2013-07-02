@@ -17,75 +17,106 @@
 <a name="line-8"></a>Based on answer by Andreas Hammar at &lt;<a href="http://stackoverflow.com/a/12807521/972985">http://stackoverflow.com/a/12807521/972985</a>&gt;
 <a name="line-9"></a>-}</span>
 <a name="line-10"></a><span class='hs-keyword'>module</span> <span class='hs-conid'>System</span><span class='hs-varop'>.</span><span class='hs-conid'>Console</span><span class='hs-varop'>.</span><span class='hs-conid'>Terminal</span><span class='hs-varop'>.</span><span class='hs-conid'>Size</span>
-<a name="line-11"></a>  <span class='hs-layout'>(</span> <span class='hs-conid'>Window</span><span class='hs-layout'>(</span><span class='hs-keyglyph'>..</span><span class='hs-layout'>)</span><span class='hs-layout'>,</span> <span class='hs-varid'>size</span>
+<a name="line-11"></a>  <span class='hs-layout'>(</span> <span class='hs-conid'>Window</span><span class='hs-layout'>(</span><span class='hs-keyglyph'>..</span><span class='hs-layout'>)</span><span class='hs-layout'>,</span> <span class='hs-varid'>size</span><span class='hs-layout'>,</span> <span class='hs-varid'>fdSize</span><span class='hs-layout'>,</span> <span class='hs-varid'>hSize</span>
 <a name="line-12"></a>  <span class='hs-layout'>)</span> <span class='hs-keyword'>where</span>
 <a name="line-13"></a>
 <a name="line-14"></a><span class='hs-keyword'>import</span> <span class='hs-conid'>Control</span><span class='hs-varop'>.</span><span class='hs-conid'>Exception</span> <span class='hs-layout'>(</span><span class='hs-varid'>catch</span><span class='hs-layout'>)</span>
-<a name="line-15"></a><span class='hs-keyword'>import</span> <span class='hs-conid'>Foreign</span>
-<a name="line-16"></a><span class='hs-keyword'>import</span> <span class='hs-conid'>Foreign</span><span class='hs-varop'>.</span><span class='hs-conid'>C</span><span class='hs-varop'>.</span><span class='hs-conid'>Error</span>
-<a name="line-17"></a><span class='hs-keyword'>import</span> <span class='hs-conid'>Foreign</span><span class='hs-varop'>.</span><span class='hs-conid'>C</span><span class='hs-varop'>.</span><span class='hs-conid'>Types</span>
-<a name="line-18"></a>
-<a name="line-19"></a><span class='hs-comment'>{-# LINE 19 "src/System/Console/Terminal/Size.hsc" #-}</span>
-<a name="line-20"></a>
-<a name="line-21"></a>
-<a name="line-22"></a><span class='hs-comment'>{-# LINE 21 "src/System/Console/Terminal/Size.hsc" #-}</span>
-<a name="line-23"></a>
-<a name="line-24"></a><span class='hs-comment'>{-# LINE 22 "src/System/Console/Terminal/Size.hsc" #-}</span>
+<a name="line-15"></a><span class='hs-keyword'>import</span> <span class='hs-conid'>Data</span><span class='hs-varop'>.</span><span class='hs-conid'>Typeable</span> <span class='hs-layout'>(</span><span class='hs-varid'>cast</span><span class='hs-layout'>)</span>
+<a name="line-16"></a><span class='hs-keyword'>import</span> <span class='hs-conid'>Foreign</span>
+<a name="line-17"></a><span class='hs-keyword'>import</span> <span class='hs-conid'>Foreign</span><span class='hs-varop'>.</span><span class='hs-conid'>C</span><span class='hs-varop'>.</span><span class='hs-conid'>Error</span>
+<a name="line-18"></a><span class='hs-keyword'>import</span> <span class='hs-conid'>Foreign</span><span class='hs-varop'>.</span><span class='hs-conid'>C</span><span class='hs-varop'>.</span><span class='hs-conid'>Types</span>
+<a name="line-19"></a><span class='hs-keyword'>import</span> <span class='hs-conid'>GHC</span><span class='hs-varop'>.</span><span class='hs-conid'>IO</span><span class='hs-varop'>.</span><span class='hs-conid'>FD</span> <span class='hs-layout'>(</span><span class='hs-conid'>FD</span><span class='hs-layout'>(</span><span class='hs-conid'>FD</span><span class='hs-layout'>,</span> <span class='hs-varid'>fdFD</span><span class='hs-layout'>)</span><span class='hs-layout'>)</span>
+<a name="line-20"></a><span class='hs-keyword'>import</span> <span class='hs-conid'>GHC</span><span class='hs-varop'>.</span><span class='hs-conid'>IO</span><span class='hs-varop'>.</span><span class='hs-conid'>Handle</span><span class='hs-varop'>.</span><span class='hs-conid'>Internals</span> <span class='hs-layout'>(</span><span class='hs-varid'>withHandle_</span><span class='hs-layout'>)</span>
+<a name="line-21"></a><span class='hs-keyword'>import</span> <span class='hs-conid'>GHC</span><span class='hs-varop'>.</span><span class='hs-conid'>IO</span><span class='hs-varop'>.</span><span class='hs-conid'>Handle</span><span class='hs-varop'>.</span><span class='hs-conid'>Types</span> <span class='hs-layout'>(</span><span class='hs-conid'>Handle</span><span class='hs-layout'>,</span> <span class='hs-conid'>Handle__</span><span class='hs-layout'>(</span><span class='hs-conid'>Handle__</span><span class='hs-layout'>,</span> <span class='hs-varid'>haDevice</span><span class='hs-layout'>)</span><span class='hs-layout'>)</span>
+<a name="line-22"></a>
+<a name="line-23"></a><span class='hs-comment'>{-# LINE 23 "src/System/Console/Terminal/Size.hsc" #-}</span>
+<a name="line-24"></a><span class='hs-keyword'>import</span> <span class='hs-conid'>System</span><span class='hs-varop'>.</span><span class='hs-conid'>Posix</span><span class='hs-varop'>.</span><span class='hs-conid'>Types</span> <span class='hs-layout'>(</span><span class='hs-conid'>Fd</span><span class='hs-layout'>(</span><span class='hs-conid'>Fd</span><span class='hs-layout'>)</span><span class='hs-layout'>)</span>
 <a name="line-25"></a>
 <a name="line-26"></a>
-<a name="line-27"></a>
-<a name="line-28"></a><span class='hs-comment'>{-# LINE 25 "src/System/Console/Terminal/Size.hsc" #-}</span>
-<a name="line-29"></a>
+<a name="line-27"></a><span class='hs-comment'>{-# LINE 26 "src/System/Console/Terminal/Size.hsc" #-}</span>
+<a name="line-28"></a>
+<a name="line-29"></a><span class='hs-comment'>{-# LINE 27 "src/System/Console/Terminal/Size.hsc" #-}</span>
 <a name="line-30"></a>
-<a name="line-31"></a><a name="CWin"></a><span class='hs-comment'>-- Interesting part of @struct winsize@</span>
-<a name="line-32"></a><a name="CWin"></a><span class='hs-keyword'>data</span> <span class='hs-conid'>CWin</span> <span class='hs-keyglyph'>=</span> <span class='hs-conid'>CWin</span> <span class='hs-conid'>CUShort</span> <span class='hs-conid'>CUShort</span>
-<a name="line-33"></a>
-<a name="line-34"></a><a name="instance%20Storable%20CWin"></a><span class='hs-keyword'>instance</span> <span class='hs-conid'>Storable</span> <span class='hs-conid'>CWin</span> <span class='hs-keyword'>where</span>
-<a name="line-35"></a>  <span class='hs-varid'>sizeOf</span> <span class='hs-keyword'>_</span> <span class='hs-keyglyph'>=</span> <span class='hs-layout'>(</span><span class='hs-layout'>(</span><span class='hs-num'>8</span><span class='hs-layout'>)</span><span class='hs-layout'>)</span>
-<a name="line-36"></a><span class='hs-comment'>{-# LINE 32 "src/System/Console/Terminal/Size.hsc" #-}</span>
-<a name="line-37"></a>  <span class='hs-varid'>alignment</span> <span class='hs-keyword'>_</span> <span class='hs-keyglyph'>=</span> <span class='hs-layout'>(</span><span class='hs-num'>2</span><span class='hs-layout'>)</span>
-<a name="line-38"></a><span class='hs-comment'>{-# LINE 33 "src/System/Console/Terminal/Size.hsc" #-}</span>
-<a name="line-39"></a>  <span class='hs-varid'>peek</span> <span class='hs-varid'>ptr</span> <span class='hs-keyglyph'>=</span> <span class='hs-keyword'>do</span>
-<a name="line-40"></a>    <span class='hs-varid'>row</span> <span class='hs-keyglyph'>&lt;-</span> <span class='hs-layout'>(</span><span class='hs-layout'>(</span><span class='hs-keyglyph'>\</span><span class='hs-varid'>hsc_ptr</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>peekByteOff</span> <span class='hs-varid'>hsc_ptr</span> <span class='hs-num'>0</span><span class='hs-layout'>)</span><span class='hs-layout'>)</span> <span class='hs-varid'>ptr</span>
-<a name="line-41"></a><span class='hs-comment'>{-# LINE 35 "src/System/Console/Terminal/Size.hsc" #-}</span>
-<a name="line-42"></a>    <span class='hs-varid'>col</span> <span class='hs-keyglyph'>&lt;-</span> <span class='hs-layout'>(</span><span class='hs-layout'>(</span><span class='hs-keyglyph'>\</span><span class='hs-varid'>hsc_ptr</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>peekByteOff</span> <span class='hs-varid'>hsc_ptr</span> <span class='hs-num'>2</span><span class='hs-layout'>)</span><span class='hs-layout'>)</span> <span class='hs-varid'>ptr</span>
-<a name="line-43"></a><span class='hs-comment'>{-# LINE 36 "src/System/Console/Terminal/Size.hsc" #-}</span>
-<a name="line-44"></a>    <span class='hs-varid'>return</span> <span class='hs-varop'>$</span> <span class='hs-conid'>CWin</span> <span class='hs-varid'>row</span> <span class='hs-varid'>col</span>
-<a name="line-45"></a>  <span class='hs-varid'>poke</span> <span class='hs-varid'>ptr</span> <span class='hs-layout'>(</span><span class='hs-conid'>CWin</span> <span class='hs-varid'>row</span> <span class='hs-varid'>col</span><span class='hs-layout'>)</span> <span class='hs-keyglyph'>=</span> <span class='hs-keyword'>do</span>
-<a name="line-46"></a>    <span class='hs-layout'>(</span><span class='hs-layout'>(</span><span class='hs-keyglyph'>\</span><span class='hs-varid'>hsc_ptr</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>pokeByteOff</span> <span class='hs-varid'>hsc_ptr</span> <span class='hs-num'>0</span><span class='hs-layout'>)</span><span class='hs-layout'>)</span> <span class='hs-varid'>ptr</span> <span class='hs-varid'>row</span>
-<a name="line-47"></a><span class='hs-comment'>{-# LINE 39 "src/System/Console/Terminal/Size.hsc" #-}</span>
-<a name="line-48"></a>    <span class='hs-layout'>(</span><span class='hs-layout'>(</span><span class='hs-keyglyph'>\</span><span class='hs-varid'>hsc_ptr</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>pokeByteOff</span> <span class='hs-varid'>hsc_ptr</span> <span class='hs-num'>2</span><span class='hs-layout'>)</span><span class='hs-layout'>)</span> <span class='hs-varid'>ptr</span> <span class='hs-varid'>col</span>
-<a name="line-49"></a><span class='hs-comment'>{-# LINE 40 "src/System/Console/Terminal/Size.hsc" #-}</span>
-<a name="line-50"></a>
-<a name="line-51"></a>
-<a name="line-52"></a><a name="Window"></a><span class='hs-comment'>-- | Terminal window width and height</span>
-<a name="line-53"></a><a name="Window"></a><span class='hs-keyword'>data</span> <span class='hs-conid'>Window</span> <span class='hs-varid'>a</span> <span class='hs-keyglyph'>=</span> <span class='hs-conid'>Window</span>
-<a name="line-54"></a>  <span class='hs-layout'>{</span> <span class='hs-varid'>height</span> <span class='hs-keyglyph'>::</span> <span class='hs-varop'>!</span><span class='hs-varid'>a</span>
-<a name="line-55"></a>  <span class='hs-layout'>,</span> <span class='hs-varid'>width</span>  <span class='hs-keyglyph'>::</span> <span class='hs-varop'>!</span><span class='hs-varid'>a</span>
-<a name="line-56"></a>  <span class='hs-layout'>}</span> <span class='hs-keyword'>deriving</span> <span class='hs-layout'>(</span><span class='hs-conid'>Show</span><span class='hs-layout'>,</span> <span class='hs-conid'>Read</span><span class='hs-layout'>)</span>
-<a name="line-57"></a>
-<a name="line-58"></a><a name="instance%20Functor%20Window"></a><span class='hs-keyword'>instance</span> <span class='hs-conid'>Functor</span> <span class='hs-conid'>Window</span> <span class='hs-keyword'>where</span>
-<a name="line-59"></a>  <span class='hs-varid'>fmap</span> <span class='hs-varid'>f</span> <span class='hs-layout'>(</span><span class='hs-conid'>Window</span> <span class='hs-layout'>{</span> <span class='hs-varid'>height</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>h</span><span class='hs-layout'>,</span> <span class='hs-varid'>width</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>w</span> <span class='hs-layout'>}</span><span class='hs-layout'>)</span> <span class='hs-keyglyph'>=</span> <span class='hs-conid'>Window</span> <span class='hs-layout'>{</span> <span class='hs-varid'>height</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>f</span> <span class='hs-varid'>h</span><span class='hs-layout'>,</span> <span class='hs-varid'>width</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>f</span> <span class='hs-varid'>w</span> <span class='hs-layout'>}</span>
-<a name="line-60"></a>
-<a name="line-61"></a>
-<a name="line-62"></a><a name="size"></a><span class='hs-comment'>-- | Get terminal window width and height</span>
-<a name="line-63"></a><span class='hs-comment'>--</span>
-<a name="line-64"></a><span class='hs-comment'>-- &gt;&gt;&gt; import System.Console.Terminal.Size</span>
-<a name="line-65"></a><span class='hs-comment'>-- &gt;&gt;&gt; size</span>
-<a name="line-66"></a><span class='hs-comment'>-- Just (Window {height = 60, width = 112})</span>
-<a name="line-67"></a><span class='hs-definition'>size</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>Integral</span> <span class='hs-varid'>n</span> <span class='hs-keyglyph'>=&gt;</span> <span class='hs-conid'>IO</span> <span class='hs-layout'>(</span><span class='hs-conid'>Maybe</span> <span class='hs-layout'>(</span><span class='hs-conid'>Window</span> <span class='hs-varid'>n</span><span class='hs-layout'>)</span><span class='hs-layout'>)</span>
-<a name="line-68"></a><span class='hs-definition'>size</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>with</span> <span class='hs-layout'>(</span><span class='hs-conid'>CWin</span> <span class='hs-num'>0</span> <span class='hs-num'>0</span><span class='hs-layout'>)</span> <span class='hs-varop'>$</span> <span class='hs-keyglyph'>\</span><span class='hs-varid'>ws</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-keyword'>do</span>
-<a name="line-69"></a>  <span class='hs-varid'>throwErrnoIfMinus1</span> <span class='hs-str'>"ioctl"</span> <span class='hs-varop'>$</span>
-<a name="line-70"></a>    <span class='hs-varid'>ioctl</span> <span class='hs-layout'>(</span><span class='hs-num'>1</span><span class='hs-layout'>)</span> <span class='hs-layout'>(</span><span class='hs-num'>21523</span><span class='hs-layout'>)</span> <span class='hs-varid'>ws</span>
-<a name="line-71"></a><span class='hs-comment'>{-# LINE 61 "src/System/Console/Terminal/Size.hsc" #-}</span>
-<a name="line-72"></a>  <span class='hs-conid'>CWin</span> <span class='hs-varid'>row</span> <span class='hs-varid'>col</span> <span class='hs-keyglyph'>&lt;-</span> <span class='hs-varid'>peek</span> <span class='hs-varid'>ws</span>
-<a name="line-73"></a>  <span class='hs-varid'>return</span> <span class='hs-varop'>.</span> <span class='hs-conid'>Just</span> <span class='hs-varop'>$</span> <span class='hs-conid'>Window</span> <span class='hs-layout'>(</span><span class='hs-varid'>fromIntegral</span> <span class='hs-varid'>row</span><span class='hs-layout'>)</span> <span class='hs-layout'>(</span><span class='hs-varid'>fromIntegral</span> <span class='hs-varid'>col</span><span class='hs-layout'>)</span>
-<a name="line-74"></a> <span class='hs-varop'>`catch`</span> <span class='hs-varid'>handler</span>
-<a name="line-75"></a> <span class='hs-keyword'>where</span>
-<a name="line-76"></a>  <span class='hs-varid'>handler</span> <span class='hs-keyglyph'>::</span> <span class='hs-layout'>(</span><span class='hs-conid'>IOError</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>IO</span> <span class='hs-layout'>(</span><span class='hs-conid'>Maybe</span> <span class='hs-layout'>(</span><span class='hs-conid'>Window</span> <span class='hs-varid'>h</span><span class='hs-layout'>)</span><span class='hs-layout'>)</span><span class='hs-layout'>)</span>
-<a name="line-77"></a>  <span class='hs-varid'>handler</span> <span class='hs-keyword'>_</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>return</span> <span class='hs-conid'>Nothing</span>
-<a name="line-78"></a>
-<a name="line-79"></a><span class='hs-keyword'>foreign</span> <span class='hs-keyword'>import</span> <span class='hs-keyword'>ccall</span> <span class='hs-str'>"sys/ioctl.h ioctl"</span>
-<a name="line-80"></a>  <span class='hs-varid'>ioctl</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>CInt</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>CInt</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Ptr</span> <span class='hs-conid'>CWin</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>IO</span> <span class='hs-conid'>CInt</span>
+<a name="line-31"></a>
+<a name="line-32"></a>
+<a name="line-33"></a><span class='hs-comment'>{-# LINE 30 "src/System/Console/Terminal/Size.hsc" #-}</span>
+<a name="line-34"></a>
+<a name="line-35"></a>
+<a name="line-36"></a><a name="CWin"></a><span class='hs-comment'>-- Interesting part of @struct winsize@</span>
+<a name="line-37"></a><a name="CWin"></a><span class='hs-keyword'>data</span> <span class='hs-conid'>CWin</span> <span class='hs-keyglyph'>=</span> <span class='hs-conid'>CWin</span> <span class='hs-conid'>CUShort</span> <span class='hs-conid'>CUShort</span>
+<a name="line-38"></a>
+<a name="line-39"></a><a name="instance%20Storable%20CWin"></a><span class='hs-keyword'>instance</span> <span class='hs-conid'>Storable</span> <span class='hs-conid'>CWin</span> <span class='hs-keyword'>where</span>
+<a name="line-40"></a>  <span class='hs-varid'>sizeOf</span> <span class='hs-keyword'>_</span> <span class='hs-keyglyph'>=</span> <span class='hs-layout'>(</span><span class='hs-layout'>(</span><span class='hs-num'>8</span><span class='hs-layout'>)</span><span class='hs-layout'>)</span>
+<a name="line-41"></a><span class='hs-comment'>{-# LINE 37 "src/System/Console/Terminal/Size.hsc" #-}</span>
+<a name="line-42"></a>  <span class='hs-varid'>alignment</span> <span class='hs-keyword'>_</span> <span class='hs-keyglyph'>=</span> <span class='hs-layout'>(</span><span class='hs-num'>2</span><span class='hs-layout'>)</span>
+<a name="line-43"></a><span class='hs-comment'>{-# LINE 38 "src/System/Console/Terminal/Size.hsc" #-}</span>
+<a name="line-44"></a>  <span class='hs-varid'>peek</span> <span class='hs-varid'>ptr</span> <span class='hs-keyglyph'>=</span> <span class='hs-keyword'>do</span>
+<a name="line-45"></a>    <span class='hs-varid'>row</span> <span class='hs-keyglyph'>&lt;-</span> <span class='hs-layout'>(</span><span class='hs-layout'>(</span><span class='hs-keyglyph'>\</span><span class='hs-varid'>hsc_ptr</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>peekByteOff</span> <span class='hs-varid'>hsc_ptr</span> <span class='hs-num'>0</span><span class='hs-layout'>)</span><span class='hs-layout'>)</span> <span class='hs-varid'>ptr</span>
+<a name="line-46"></a><span class='hs-comment'>{-# LINE 40 "src/System/Console/Terminal/Size.hsc" #-}</span>
+<a name="line-47"></a>    <span class='hs-varid'>col</span> <span class='hs-keyglyph'>&lt;-</span> <span class='hs-layout'>(</span><span class='hs-layout'>(</span><span class='hs-keyglyph'>\</span><span class='hs-varid'>hsc_ptr</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>peekByteOff</span> <span class='hs-varid'>hsc_ptr</span> <span class='hs-num'>2</span><span class='hs-layout'>)</span><span class='hs-layout'>)</span> <span class='hs-varid'>ptr</span>
+<a name="line-48"></a><span class='hs-comment'>{-# LINE 41 "src/System/Console/Terminal/Size.hsc" #-}</span>
+<a name="line-49"></a>    <span class='hs-varid'>return</span> <span class='hs-varop'>$</span> <span class='hs-conid'>CWin</span> <span class='hs-varid'>row</span> <span class='hs-varid'>col</span>
+<a name="line-50"></a>  <span class='hs-varid'>poke</span> <span class='hs-varid'>ptr</span> <span class='hs-layout'>(</span><span class='hs-conid'>CWin</span> <span class='hs-varid'>row</span> <span class='hs-varid'>col</span><span class='hs-layout'>)</span> <span class='hs-keyglyph'>=</span> <span class='hs-keyword'>do</span>
+<a name="line-51"></a>    <span class='hs-layout'>(</span><span class='hs-layout'>(</span><span class='hs-keyglyph'>\</span><span class='hs-varid'>hsc_ptr</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>pokeByteOff</span> <span class='hs-varid'>hsc_ptr</span> <span class='hs-num'>0</span><span class='hs-layout'>)</span><span class='hs-layout'>)</span> <span class='hs-varid'>ptr</span> <span class='hs-varid'>row</span>
+<a name="line-52"></a><span class='hs-comment'>{-# LINE 44 "src/System/Console/Terminal/Size.hsc" #-}</span>
+<a name="line-53"></a>    <span class='hs-layout'>(</span><span class='hs-layout'>(</span><span class='hs-keyglyph'>\</span><span class='hs-varid'>hsc_ptr</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>pokeByteOff</span> <span class='hs-varid'>hsc_ptr</span> <span class='hs-num'>2</span><span class='hs-layout'>)</span><span class='hs-layout'>)</span> <span class='hs-varid'>ptr</span> <span class='hs-varid'>col</span>
+<a name="line-54"></a><span class='hs-comment'>{-# LINE 45 "src/System/Console/Terminal/Size.hsc" #-}</span>
+<a name="line-55"></a>
+<a name="line-56"></a>
+<a name="line-57"></a><a name="Window"></a><span class='hs-comment'>-- | Terminal window width and height</span>
+<a name="line-58"></a><a name="Window"></a><span class='hs-keyword'>data</span> <span class='hs-conid'>Window</span> <span class='hs-varid'>a</span> <span class='hs-keyglyph'>=</span> <span class='hs-conid'>Window</span>
+<a name="line-59"></a>  <span class='hs-layout'>{</span> <span class='hs-varid'>height</span> <span class='hs-keyglyph'>::</span> <span class='hs-varop'>!</span><span class='hs-varid'>a</span>
+<a name="line-60"></a>  <span class='hs-layout'>,</span> <span class='hs-varid'>width</span>  <span class='hs-keyglyph'>::</span> <span class='hs-varop'>!</span><span class='hs-varid'>a</span>
+<a name="line-61"></a>  <span class='hs-layout'>}</span> <span class='hs-keyword'>deriving</span> <span class='hs-layout'>(</span><span class='hs-conid'>Show</span><span class='hs-layout'>,</span> <span class='hs-conid'>Read</span><span class='hs-layout'>)</span>
+<a name="line-62"></a>
+<a name="line-63"></a><a name="instance%20Functor%20Window"></a><span class='hs-keyword'>instance</span> <span class='hs-conid'>Functor</span> <span class='hs-conid'>Window</span> <span class='hs-keyword'>where</span>
+<a name="line-64"></a>  <span class='hs-varid'>fmap</span> <span class='hs-varid'>f</span> <span class='hs-layout'>(</span><span class='hs-conid'>Window</span> <span class='hs-layout'>{</span> <span class='hs-varid'>height</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>h</span><span class='hs-layout'>,</span> <span class='hs-varid'>width</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>w</span> <span class='hs-layout'>}</span><span class='hs-layout'>)</span> <span class='hs-keyglyph'>=</span> <span class='hs-conid'>Window</span> <span class='hs-layout'>{</span> <span class='hs-varid'>height</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>f</span> <span class='hs-varid'>h</span><span class='hs-layout'>,</span> <span class='hs-varid'>width</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>f</span> <span class='hs-varid'>w</span> <span class='hs-layout'>}</span>
+<a name="line-65"></a>
+<a name="line-66"></a><a name="fdSize"></a><span class='hs-comment'>-- | Get terminal window width and height for a specified file descriptor. If</span>
+<a name="line-67"></a><span class='hs-comment'>-- it's not attached to a terminal then 'Nothing' is returned.</span>
+<a name="line-68"></a><span class='hs-comment'>--</span>
+<a name="line-69"></a><span class='hs-comment'>-- &gt;&gt;&gt; import System.Console.Terminal.Size</span>
+<a name="line-70"></a><span class='hs-comment'>-- &gt;&gt;&gt; import System.Posix</span>
+<a name="line-71"></a><span class='hs-comment'>-- &gt;&gt;&gt; fdSize stdOutput</span>
+<a name="line-72"></a><span class='hs-comment'>-- Just (Window {height = 56, width = 85})</span>
+<a name="line-73"></a><span class='hs-comment'>-- &gt;&gt;&gt; fd &lt;- openFd "foo" ReadWrite (Just stdFileMode) defaultFileFlags</span>
+<a name="line-74"></a><span class='hs-comment'>-- &gt;&gt;&gt; fdSize fd</span>
+<a name="line-75"></a><span class='hs-comment'>-- Nothing</span>
+<a name="line-76"></a><span class='hs-definition'>fdSize</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>Integral</span> <span class='hs-varid'>n</span> <span class='hs-keyglyph'>=&gt;</span> <span class='hs-conid'>Fd</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>IO</span> <span class='hs-layout'>(</span><span class='hs-conid'>Maybe</span> <span class='hs-layout'>(</span><span class='hs-conid'>Window</span> <span class='hs-varid'>n</span><span class='hs-layout'>)</span><span class='hs-layout'>)</span>
+<a name="line-77"></a><span class='hs-definition'>fdSize</span> <span class='hs-layout'>(</span><span class='hs-conid'>Fd</span> <span class='hs-varid'>fd</span><span class='hs-layout'>)</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>with</span> <span class='hs-layout'>(</span><span class='hs-conid'>CWin</span> <span class='hs-num'>0</span> <span class='hs-num'>0</span><span class='hs-layout'>)</span> <span class='hs-varop'>$</span> <span class='hs-keyglyph'>\</span><span class='hs-varid'>ws</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-keyword'>do</span>
+<a name="line-78"></a>  <span class='hs-varid'>throwErrnoIfMinus1</span> <span class='hs-str'>"ioctl"</span> <span class='hs-varop'>$</span>
+<a name="line-79"></a>    <span class='hs-varid'>ioctl</span> <span class='hs-varid'>fd</span> <span class='hs-layout'>(</span><span class='hs-num'>21523</span><span class='hs-layout'>)</span> <span class='hs-varid'>ws</span>
+<a name="line-80"></a><span class='hs-comment'>{-# LINE 70 "src/System/Console/Terminal/Size.hsc" #-}</span>
+<a name="line-81"></a>  <span class='hs-conid'>CWin</span> <span class='hs-varid'>row</span> <span class='hs-varid'>col</span> <span class='hs-keyglyph'>&lt;-</span> <span class='hs-varid'>peek</span> <span class='hs-varid'>ws</span>
+<a name="line-82"></a>  <span class='hs-varid'>return</span> <span class='hs-varop'>.</span> <span class='hs-conid'>Just</span> <span class='hs-varop'>$</span> <span class='hs-conid'>Window</span> <span class='hs-layout'>(</span><span class='hs-varid'>fromIntegral</span> <span class='hs-varid'>row</span><span class='hs-layout'>)</span> <span class='hs-layout'>(</span><span class='hs-varid'>fromIntegral</span> <span class='hs-varid'>col</span><span class='hs-layout'>)</span>
+<a name="line-83"></a> <span class='hs-varop'>`catch`</span>
+<a name="line-84"></a>  <span class='hs-varid'>handler</span>
+<a name="line-85"></a> <span class='hs-keyword'>where</span>
+<a name="line-86"></a>  <span class='hs-varid'>handler</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>IOError</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>IO</span> <span class='hs-layout'>(</span><span class='hs-conid'>Maybe</span> <span class='hs-layout'>(</span><span class='hs-conid'>Window</span> <span class='hs-varid'>h</span><span class='hs-layout'>)</span><span class='hs-layout'>)</span>
+<a name="line-87"></a>  <span class='hs-varid'>handler</span> <span class='hs-keyword'>_</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>return</span> <span class='hs-conid'>Nothing</span>
+<a name="line-88"></a>
+<a name="line-89"></a><span class='hs-keyword'>foreign</span> <span class='hs-keyword'>import</span> <span class='hs-keyword'>ccall</span> <span class='hs-str'>"sys/ioctl.h ioctl"</span>
+<a name="line-90"></a>  <span class='hs-varid'>ioctl</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>CInt</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>CInt</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Ptr</span> <span class='hs-conid'>CWin</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>IO</span> <span class='hs-conid'>CInt</span>
+<a name="line-91"></a>
+<a name="line-92"></a><a name="size"></a><span class='hs-comment'>-- | Get terminal window width and height for @stdout@.</span>
+<a name="line-93"></a><span class='hs-comment'>--</span>
+<a name="line-94"></a><span class='hs-comment'>-- &gt;&gt;&gt; import System.Console.Terminal.Size</span>
+<a name="line-95"></a><span class='hs-comment'>-- &gt;&gt;&gt; size</span>
+<a name="line-96"></a><span class='hs-comment'>-- Just (Window {height = 60, width = 112})</span>
+<a name="line-97"></a><span class='hs-definition'>size</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>Integral</span> <span class='hs-varid'>n</span> <span class='hs-keyglyph'>=&gt;</span> <span class='hs-conid'>IO</span> <span class='hs-layout'>(</span><span class='hs-conid'>Maybe</span> <span class='hs-layout'>(</span><span class='hs-conid'>Window</span> <span class='hs-varid'>n</span><span class='hs-layout'>)</span><span class='hs-layout'>)</span>
+<a name="line-98"></a><span class='hs-definition'>size</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>fdSize</span> <span class='hs-layout'>(</span><span class='hs-conid'>Fd</span> <span class='hs-layout'>(</span><span class='hs-num'>1</span><span class='hs-layout'>)</span><span class='hs-layout'>)</span>
+<a name="line-99"></a><span class='hs-comment'>{-# LINE 88 "src/System/Console/Terminal/Size.hsc" #-}</span>
+<a name="line-100"></a>
+<a name="line-101"></a><a name="hSize"></a><span class='hs-comment'>-- | Same as 'fdSize', but takes 'Handle' instead of 'Fd' (file descriptor).</span>
+<a name="line-102"></a><span class='hs-comment'>--</span>
+<a name="line-103"></a><span class='hs-comment'>-- &gt;&gt;&gt; import System.Console.Terminal.Size</span>
+<a name="line-104"></a><span class='hs-comment'>-- &gt;&gt;&gt; import System.IO</span>
+<a name="line-105"></a><span class='hs-comment'>-- &gt;&gt;&gt; hSize stdout</span>
+<a name="line-106"></a><span class='hs-comment'>-- Just (Window {height = 56, width = 85})</span>
+<a name="line-107"></a><span class='hs-definition'>hSize</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>Integral</span> <span class='hs-varid'>n</span> <span class='hs-keyglyph'>=&gt;</span> <span class='hs-conid'>Handle</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>IO</span> <span class='hs-layout'>(</span><span class='hs-conid'>Maybe</span> <span class='hs-layout'>(</span><span class='hs-conid'>Window</span> <span class='hs-varid'>n</span><span class='hs-layout'>)</span><span class='hs-layout'>)</span>
+<a name="line-108"></a><span class='hs-definition'>hSize</span> <span class='hs-varid'>h</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>withHandle_</span> <span class='hs-str'>"hSize"</span> <span class='hs-varid'>h</span> <span class='hs-varop'>$</span> <span class='hs-keyglyph'>\</span><span class='hs-conid'>Handle__</span> <span class='hs-layout'>{</span> <span class='hs-varid'>haDevice</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>dev</span> <span class='hs-layout'>}</span> <span class='hs-keyglyph'>-&gt;</span>
+<a name="line-109"></a>  <span class='hs-keyword'>case</span> <span class='hs-varid'>cast</span> <span class='hs-varid'>dev</span> <span class='hs-keyword'>of</span>
+<a name="line-110"></a>    <span class='hs-conid'>Nothing</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>return</span> <span class='hs-conid'>Nothing</span>
+<a name="line-111"></a>    <span class='hs-conid'>Just</span> <span class='hs-conid'>FD</span> <span class='hs-layout'>{</span> <span class='hs-varid'>fdFD</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>fd</span> <span class='hs-layout'>}</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>fdSize</span> <span class='hs-layout'>(</span><span class='hs-conid'>Fd</span> <span class='hs-varid'>fd</span><span class='hs-layout'>)</span>
 </pre></body>
 </html>
