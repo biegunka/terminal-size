@@ -1,5 +1,5 @@
 name:                terminal-size
-version:             0.2.0.0
+version:             0.2.1.0
 synopsis:            Get terminal window height and width
 description:
   Get terminal window height and width without ncurses dependency
