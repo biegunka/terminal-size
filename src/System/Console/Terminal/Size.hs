@@ -9,7 +9,7 @@ module System.Console.Terminal.Size
   ( Window(..), size, fdSize, hSize
   ) where
 
-import System.Console.Terminal.Size.Common
+import System.Console.Terminal.Common
 import qualified System.Console.Terminal.Posix as Posix
 
 
