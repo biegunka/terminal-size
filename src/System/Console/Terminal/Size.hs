@@ -11,6 +11,8 @@ module System.Console.Terminal.Size
 
 import System.Console.Terminal.Common
 import qualified System.Console.Terminal.Posix as Posix
+import GHC.IO.FD(FD)
+import System.IO(Handle)
 
 
 -- | Get terminal window width and height for a specified file descriptor. If
