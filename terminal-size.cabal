@@ -19,6 +19,8 @@ library
   build-tools:       hsc2hs
   hs-source-dirs:    src
   exposed-modules:   System.Console.Terminal.Size
+  other-modules:     System.Console.Terminal.Posix
+                     System.Console.Terminal.Common
   ghc-options:       -Wall
                      -fno-warn-unused-do-bind
 
