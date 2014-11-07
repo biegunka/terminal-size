@@ -1,5 +1,5 @@
 name:                terminal-size
-version:             0.2.1.0
+version:             0.3.0
 synopsis:            Get terminal window height and width
 description:
   Get terminal window height and width without ncurses dependency.
@@ -10,6 +10,9 @@ maintainer:          matvey.aksenov@gmail.com
 category:            System
 build-type:          Simple
 cabal-version:       >= 1.10
+extra-source-files:
+  README.markdown
+  CHANGELOG.markdown
 
 library
   default-language:  Haskell2010

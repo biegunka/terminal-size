@@ -6,7 +6,8 @@ terminal-size
 
 Get terminal window width and height
 
-##Usage
+Usage
+-----
 
 ```
 >>> import System.Console.Terminal.Size
