@@ -3,6 +3,8 @@ language: haskell
 ghc:
   - 7.8
   - 7.6
+  - 7.4
+  - 7.2
 
 install:
   - cabal sdist && cabal install --enable-tests dist/terminal-size-*.tar.gz
