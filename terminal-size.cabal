@@ -2,9 +2,7 @@ name:                terminal-size
 version:             0.2.1.0
 synopsis:            Get terminal window height and width
 description:
-  Get terminal window height and width without ncurses dependency
-  .
-  Only tested to work on GNU/Linux systems
+  Get terminal window height and width without ncurses dependency.
 license:             BSD3
 license-file:        LICENSE
 author:              Andreas Hammar, Matvey Aksenov
@@ -19,8 +17,11 @@ library
   build-tools:       hsc2hs
   hs-source-dirs:    src
   exposed-modules:   System.Console.Terminal.Size
-  other-modules:     System.Console.Terminal.Posix
-                     System.Console.Terminal.Common
+  other-modules:     System.Console.Terminal.Common
+  if os(Windows)
+    other-modules:   System.Console.Terminal.Windows
+  else
+    other-modules:   System.Console.Terminal.Posix
   ghc-options:       -Wall
                      -fno-warn-unused-do-bind
 
