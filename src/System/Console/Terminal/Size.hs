@@ -10,7 +10,7 @@ module System.Console.Terminal.Size
   ) where
 
 import System.Console.Terminal.Size.Common
-import qualified System.Console.Terminal.Size.Posix as Posix
+import qualified System.Console.Terminal.Posix as Posix
 
 
 -- | Get terminal window width and height for a specified file descriptor. If
