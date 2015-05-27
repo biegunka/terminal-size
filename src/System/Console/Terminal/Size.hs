@@ -5,9 +5,11 @@ Get terminal window height and width without ncurses dependency
 Based on answer by Andreas Hammar at <http://stackoverflow.com/a/12807521/972985>
 -}
 module System.Console.Terminal.Size
-  ( Window(..), size
+  ( Window(..)
+  , size
 #if !defined(mingw32_HOST_OS)
-    ,fdSize, hSize
+  , fdSize
+  , hSize
 #endif
   ) where
 
