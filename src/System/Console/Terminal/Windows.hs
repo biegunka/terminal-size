@@ -8,6 +8,9 @@ import Data.Word
 import Foreign.Ptr
 import Foreign.Storable
 import Foreign.Marshal.Alloc
+import System.Exit
+import System.IO
+import System.Process
 
 type HANDLE = Ptr ()
 
@@ -34,8 +37,26 @@ size = do
     hdl <- c_GetStdHandle c_STD_OUTPUT_HANDLE
     allocaBytes sizeCONSOLE_SCREEN_BUFFER_INFO $ \p -> do
         b <- c_GetConsoleScreenBufferInfo hdl p
-        if not b then return Nothing else do
-            [left,top,right,bottom] <- forM [0..3] $ \i -> do
-                v <- peekByteOff p ((i*2) + posCONSOLE_SCREEN_BUFFER_INFO_srWindow)
-                return $ fromIntegral (v :: Word16)
-            return $ Just $ Window (1+bottom-top) (1+right-left)
+        if not b
+            then do -- This could happen on Cygwin or MSYS
+                let stty = (shell "stty size") {
+                      std_in  = UseHandle stdin
+                    , std_out = CreatePipe
+                    }
+                (_, mbStdout, _, rStty) <- createProcess stty
+                exStty <- waitForProcess rStty
+                case exStty of
+                    ExitFailure _ -> return Nothing
+                    ExitSuccess ->
+                        maybe (return Nothing)
+                              (\hSize -> do
+                                  sizeStr <- hGetContents hSize
+                                  let [r, c] = map read $ words sizeStr :: [Int]
+                                  return $ Just $ Window (fromIntegral r) (fromIntegral c)
+                              )
+                              mbStdout
+            else do
+                [left,top,right,bottom] <- forM [0..3] $ \i -> do
+                    v <- peekByteOff p ((i*2) + posCONSOLE_SCREEN_BUFFER_INFO_srWindow)
+                    return $ fromIntegral (v :: Word16)
+                return $ Just $ Window (1+bottom-top) (1+right-left)

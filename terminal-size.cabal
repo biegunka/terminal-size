@@ -32,6 +32,9 @@ library
   if impl(ghc >= 7.4 && < 7.6)
      build-depends:
        ghc-prim
+  if os(windows)
+     build-depends:
+       process
 
   build-tools:
     hsc2hs
