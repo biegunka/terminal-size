@@ -1,3 +1,8 @@
+0.3.2
+=====
+
+  * Cygwin/MSYS support (https://github.com/biegunka/terminal-size/pull/8)
+
 0.3.1
 =====
 
