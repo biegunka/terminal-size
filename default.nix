@@ -1,12 +1,2 @@
-{ cabal }:
-
-cabal.mkDerivation (self: {
-  pname = "terminal-size";
-  version = "0.3.0";
-  src = ./.;
-  meta = {
-    description = "Get terminal window height and width";
-    license = self.stdenv.lib.licenses.bsd3;
-    platforms = self.ghc.meta.platforms;
-  };
-})
+{ nixpkgs ? import <nixpkgs> {}, compiler ? "ghc7101" }:
+nixpkgs.pkgs.haskell.packages.${compiler}.callPackage ./terminal-size.nix {}
