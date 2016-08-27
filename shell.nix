@@ -1,4 +1,4 @@
-{ nixpkgs ? import <nixpkgs> {}, compiler ? "ghc7102" }: let
+{ nixpkgs ? import <nixpkgs> {}, compiler ? "ghc801" }: let
   inherit (nixpkgs) pkgs;
   ghc = pkgs.haskell.packages.${compiler}.ghcWithPackages(ps: [
     ps.hdevtools ps.hlint ps.ghc-mod
