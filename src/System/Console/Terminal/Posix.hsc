@@ -21,6 +21,10 @@ import System.Posix.Types (Fd(Fd))
 #include <sys/ioctl.h>
 #include <unistd.h>
 
+#if defined(__GLASGOW_HASKELL__) && (__GLASGOW_HASKELL__ < 800)
+#let alignment t = "%lu", (unsigned long)offsetof(struct {char x__; t (y__); }, y__)
+#endif
+
 -- Interesting part of @struct winsize@
 data CWin = CWin CUShort CUShort
 
