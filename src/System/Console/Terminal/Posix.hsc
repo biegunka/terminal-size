@@ -20,10 +20,6 @@ import System.Posix.Types (Fd(Fd))
 #include <sys/ioctl.h>
 #include <unistd.h>
 
-
-#let alignment t = "%lu", (unsigned long)offsetof(struct {char x__; t (y__); }, y__)
-
-
 -- Interesting part of @struct winsize@
 data CWin = CWin CUShort CUShort
 
