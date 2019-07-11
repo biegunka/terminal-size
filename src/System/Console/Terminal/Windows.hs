@@ -42,6 +42,7 @@ size = do
                 let stty = (shell "stty size") {
                       std_in  = UseHandle stdin
                     , std_out = CreatePipe
+                    , std_err = CreatePipe
                     }
                 (_, mbStdout, _, rStty) <- createProcess stty
                 exStty <- waitForProcess rStty
