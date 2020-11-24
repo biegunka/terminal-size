@@ -20,16 +20,12 @@ import System.Posix.Types (Fd(Fd))
 #include <sys/ioctl.h>
 #include <unistd.h>
 
-
-#let alignment t = "%lu", (unsigned long)offsetof(struct {char x__; t (y__); }, y__)
-
-
 -- Interesting part of @struct winsize@
 data CWin = CWin CUShort CUShort
 
 instance Storable CWin where
   sizeOf _ = (#size struct winsize)
-  alignment _ = (#alignment struct winsize)
+  alignment _ = (#offset struct winsize, ws_col)
   peek ptr = do
     row <- (#peek struct winsize, ws_row) ptr
     col <- (#peek struct winsize, ws_col) ptr
