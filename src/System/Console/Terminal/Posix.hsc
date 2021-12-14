@@ -1,3 +1,4 @@
+{-# LANGUAGE CApiFFI #-}
 
 module System.Console.Terminal.Posix
   ( size, fdSize, hSize
@@ -51,7 +52,7 @@ fdSize (Fd fd) = with (CWin 0 0) $ \ws -> do
   handler :: IOError -> IO (Maybe (Window h))
   handler _ = return Nothing
 
-foreign import ccall "sys/ioctl.h ioctl"
+foreign import capi "sys/ioctl.h ioctl"
   ioctl :: CInt -> CInt -> Ptr CWin -> IO CInt
 
 size :: Integral n => IO (Maybe (Window n))
