@@ -1,3 +1,13 @@
+0.3.3
+=====
+
+  * Fixed ioctl foreign import. (https://github.com/biegunka/terminal-size/pull/16)
+
+  * `#alignment` is a hsc2hs built-in since some unspecified GHC 7.x. (https://github.com/biegunka/terminal-size/pull/12)
+
+  * Captured possible `stty` stderr output with a pipe. (https://github.com/biegunka/terminal-size/pull/13)
+
+
 0.3.2.1
 =======
 
