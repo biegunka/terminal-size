@@ -20,7 +20,7 @@ hSize :: Integral n => Handle -> IO (Maybe (Window n))
 hSize hdl =
     withHandleToHANDLE hdl nativeSize
     `catchIOError` \_ -> do
-        -- This could happen on Cygwin or MSYS
+        -- Fallback to use for Cygwin or MSYS
         let stty = (shell "stty size") {
               std_in  = UseHandle hdl
             , std_out = CreatePipe
