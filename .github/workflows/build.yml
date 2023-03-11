@@ -1,0 +1,57 @@
+name: Build
+
+on: push
+
+jobs:
+  build-with-cabal:
+    name: ${{ matrix.os }} / ghc-${{ matrix.ghc }}
+
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-latest
+          - macOS-latest
+          - windows-2022
+        ghc:
+          - 8.2.2
+          - 8.4.4
+          - 8.6.5
+          - 8.8.2
+          - 8.10.7
+          - 9.0.2
+          - 9.2.4
+          - 9.4.2
+        cabal:
+          - latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Setup Haskell
+      id: setup-haskell-cabal
+      uses: haskell/actions/setup@v2
+      with:
+        ghc-version: ${{ matrix.ghc }}
+        cabal-version: ${{ matrix.cabal }}
+
+    - name: Cache cabal store
+      uses: actions/cache@v3
+      with:
+        path: ${{ steps.setup-haskell-cabal.outputs.cabal-store }}
+        key: cabal-store-${{ matrix.os }}-ghc-${{ matrix.ghc }}-${{ hashFiles('terminal-size.cabal') }}
+        restore-keys: cabal-store-${{ matrix.os }}-ghc-${{ matrix.ghc }}-
+
+    - name: Build dependencies
+      run: cabal build --only-dependencies
+
+    - name: Build
+      run: cabal build --write-ghc-environment-files=always
+
+    - name: Build Test Program
+      # It would be nice if we could also run it. But that doesn't work
+      # because the std handles are redirected in the gihub runner
+      # so hSize always returns Nothing.
+      run: ghc test.hs
