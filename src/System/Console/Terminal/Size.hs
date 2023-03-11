@@ -9,8 +9,8 @@ module System.Console.Terminal.Size
   , size
 #if !defined(mingw32_HOST_OS)
   , fdSize
-  , hSize
 #endif
+  , hSize
   ) where
 
 import System.Console.Terminal.Common
@@ -19,8 +19,8 @@ import qualified System.Console.Terminal.Windows as Host
 #else
 import qualified System.Console.Terminal.Posix as Host
 import System.Posix.Types(Fd)
-import System.IO(Handle)
 #endif
+import System.IO(Handle)
 
 
 -- | Get terminal window width and height for @stdout@.
@@ -45,9 +45,13 @@ size = Host.size
 -- Nothing
 fdSize :: Integral n => Fd -> IO (Maybe (Window n))
 fdSize = Host.fdSize
+#endif
 
--- | /Not available on Windows:/
---   Same as 'fdSize', but takes 'Handle' instead of 'Fd' (file descriptor).
+-- | Same as 'fdSize', but takes 'Handle' instead of 'Fd' (file descriptor).
+--
+-- Note that on Windows with shells that use the native console API (cmd.exe,
+-- PowerShell) this works only for output handles like 'stdout' and 'stderr';
+-- for input handles like 'stdin' it always returns 'Nothing'.
 --
 -- >>> import System.Console.Terminal.Size
 -- >>> import System.IO
@@ -55,4 +59,3 @@ fdSize = Host.fdSize
 -- Just (Window {height = 56, width = 85})
 hSize :: Integral n => Handle -> IO (Maybe (Window n))
 hSize = Host.hSize
-#endif

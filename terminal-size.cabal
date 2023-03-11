@@ -34,7 +34,8 @@ library
        ghc-prim
   if os(windows)
      build-depends:
-       process
+       process,
+       Win32 >= 2.13.2.0 && < 2.14
 
   build-tools:
     hsc2hs
