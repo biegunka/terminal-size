@@ -1,3 +1,8 @@
+0.3.4
+=====
+
+  * Provided `hSize` on Windows. (https://github.com/biegunka/terminal-size/pull/18)
+
 0.3.3
 =====
 
