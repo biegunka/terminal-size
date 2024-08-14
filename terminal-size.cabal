@@ -35,7 +35,7 @@ library
   if os(windows)
      build-depends:
        process,
-       Win32 >= 2.13.2.0 && < 2.14
+       Win32 >= 2.13.2.0 && < 2.15
 
   build-tools:
     hsc2hs
